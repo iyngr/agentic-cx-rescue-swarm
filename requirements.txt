@@ -1,0 +1,5 @@
+google-cloud-aiplatform
+google-cloud-pubsub
+google-cloud-secret-manager
+google-cloud-bigquery
+google-api-python-client
