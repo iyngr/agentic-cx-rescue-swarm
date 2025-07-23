@@ -1,10 +1,19 @@
 import unittest
 import json
-from src.action.agent import action_agent
+from src.action.agent import ActionAgent
 from io import StringIO
 import sys
 
 class TestActionAgent(unittest.TestCase):
+
+    def setUp(self):
+        self.agent = ActionAgent(
+            name="action_agent",
+            model="gemini-2.0-flash",
+            description="Agent to execute solutions and communicate with customers.",
+            instruction="You are the Action and Communication Agent. Your job is to execute the resolution and inform the customer with empathy.",
+            tools=[ActionAgent.refund_tool, ActionAgent.reship_order_tool, ActionAgent.generate_coupon_tool, ActionAgent.send_communication_tool, ActionAgent.log_to_crm_tool],
+        )
 
     def test_action_agent(self):
         """
@@ -26,7 +35,7 @@ class TestActionAgent(unittest.TestCase):
         captured_output = StringIO()
         sys.stdout = captured_output
 
-        action_agent(case_file_json, ranked_solutions_json)
+        self.agent.execute_and_communicate(case_file_json, ranked_solutions_json)
 
         # Restore stdout
         sys.stdout = sys.__stdout__
