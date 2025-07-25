@@ -43,7 +43,7 @@ def rank_solutions(customer_status: str, issue_type: str, policy_text: str, orde
                 "solution_id": 2,
                 "action": "reship_express",
                 "params": {"order_id": "O-9987"},
-                "explanation": f"Premium customer gets expedited replacement",
+                "explanation": "Premium customer gets expedited replacement",
                 "priority": "HIGH"
             })
         

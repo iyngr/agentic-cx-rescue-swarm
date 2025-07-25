@@ -63,11 +63,6 @@ def orchestrate_customer_issue(customer_id: str, transcript_id: str, issue_descr
     
     from shared_tools.policy_tools import policy_lookup_tool
     
-    case_file = {
-        "customer_details": customer_details,
-        "transcript_text": transcript_text,
-        "issue_summary": issue_description
-    }
     
     policy = policy_lookup_tool(f"policy for {issue_description} for {customer_details['status']} customer")
     workflow_log.append(f"  • Policy retrieved: {policy[:100]}...")
@@ -96,7 +91,7 @@ def orchestrate_customer_issue(customer_id: str, transcript_id: str, issue_descr
     
     # Execute the action
     if best_solution["action"] == "full_refund":
-        refund_result = refund_tool(best_solution["params"]["order_id"], best_solution["params"]["amount"])
+        refund_tool(best_solution["params"]["order_id"], best_solution["params"]["amount"])
         workflow_log.append(f"  • Refund processed: ${best_solution['params']['amount']}")
     
     # Send customer communication
@@ -112,7 +107,7 @@ Thank you for your patience and continued loyalty.
 Best regards,
 Customer Experience Team"""
     
-    comm_result = send_communication_tool("customer@example.com", "email", email_body)
+    send_communication_tool("customer@example.com", "email", email_body)
     workflow_log.append("  • ✅ Customer notification sent")
     
     # Final summary
@@ -121,7 +116,7 @@ Customer Experience Team"""
     workflow_log.append(f"Customer: {customer_id} ({customer_details['status']})")
     workflow_log.append(f"Issue: {issue_description}")
     workflow_log.append(f"Resolution: {best_solution['action']}")
-    workflow_log.append(f"Status: ✅ COMPLETED SUCCESSFULLY")
+    workflow_log.append("Status: ✅ COMPLETED SUCCESSFULLY")
     workflow_log.append("\n📊 ARCHITECTURE NOTES:")
     workflow_log.append("• Used shared_tools for all common functions")
     workflow_log.append("• Eliminated code duplication")

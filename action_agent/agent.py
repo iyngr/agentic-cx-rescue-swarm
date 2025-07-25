@@ -53,9 +53,9 @@ Best regards,
 Customer Experience Team"""
         
     elif action_type == "generate_coupon":
-        execution_summary.append(f"🔄 COORDINATING: Generating goodwill coupon for customer")
+        execution_summary.append("🔄 COORDINATING: Generating goodwill coupon for customer")
         execution_summary.append("📋 STEPS: Create coupon code → Set expiration → Send to customer")
-        recommended_communication = f"""Dear Valued Customer,
+        recommended_communication = """Dear Valued Customer,
 
 As a gesture of goodwill, we're providing you with a special discount for your next purchase.
 

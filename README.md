@@ -2,41 +2,27 @@
 
 A multi-agent system built with **Google Agent Development Kit (ADK)** that proactively handles customer issues based on sentiment analysis of call transcripts. Features **clean architecture** with **zero code duplication** and follows **ADK best practices**.
 
-## 🏗️ Clean ### **🎯 Architecture Decision Matrix**
+## 🎯 What This System Does
 
-| Requirement | Individual Agents | Consolidated Agent | Orchestrator |
-|-------------|------------------|-------------------|--------------|
-| **Simple Testing** | ✅ Perfect | ⚠️ All-or-nothing | ❌ Complex |
-| **Production Deployment** | ❌ Complex coordination | ✅ Single deployment | ✅ Enterprise ready |
-| **Debugging** | ✅ Isolated testing | ⚠️ Harder to isolate | ✅ Detailed logging |
-| **Scalability** | ✅ Independent scaling | ⚠️ Monolithic | ✅ Distributed |
-| **Maintenance** | ⚠️ Multiple deployments | ✅ Single codebase | ⚠️ Complex orchestration |
-| **Audit Trail** | ❌ Manual tracking | ⚠️ Limited visibility | ✅ Complete workflow logs |
-| **Error Recovery** | ⚠️ Manual intervention | ⚠️ All-or-nothing | ✅ Step-by-step recovery |
+This intelligent customer service system automatically:
+- **Analyzes** customer sentiment from call transcripts
+- **Prioritizes** issues based on customer value and urgency  
+- **Finds** optimal solutions using company policies
+- **Executes** actions like refunds, replacements, or communications
+- **Tracks** complete resolution workflows
 
-### **💡 When to Use Each Pattern**
+**Result**: Proactive customer issue resolution that turns frustrated customers into loyal advocates.
 
-#### **🔍 Use Individual Agents When:**
-- Building and testing components in isolation
-- Need fine-grained control over each step
-- Debugging specific functionality
-- Learning ADK agent patterns
-- **Example**: "I want to test just the triage logic"
+## 🏗️ Architecture Overview
 
-#### **🎯 Use Consolidated Agent When:**
-- Simple deployment requirements
-- End-to-end automation needed
-- Limited infrastructure complexity
-- Proof of concept or demos
-- **Example**: "I want one agent that handles everything"
+This project demonstrates **multiple agent patterns** you can use with ADK:
 
-#### **🚀 Use Orchestrator When:**
-- Enterprise production deployment
-- Complex workflow requirements
-- Detailed audit trails needed
-- Error recovery and monitoring
-- Multi-team development
-- **Example**: "I need enterprise-grade customer service automation"
+- **🔍 Individual Specialized Agents** - Triage, Solution, and Action agents that work independently
+- **🎯 Consolidated Agent** - Single agent handling the complete workflow  
+- **🚀 Multi-Agent Orchestrator** - Coordinates multiple agents working together
+- **📦 Shared Tools Library** - Centralized, reusable tools eliminating code duplication
+
+All agents use **shared tools** from a centralized library, ensuring **zero code duplication** and **easy maintenance**.
 
 ### **🔄 Complete System Architecture**
 
@@ -67,58 +53,6 @@ A multi-agent system built with **Google Agent Development Kit (ADK)** that proa
         │
         ▼
     ✅ CUSTOMER RESOLUTION
-```
-
-### **📈 Event Flow Comparison**
-
-#### **Speed to Resolution:**
-- **Individual Agents**: Slowest (manual coordination)
-- **Consolidated Agent**: Fastest (automated workflow)
-- **Orchestrator**: Medium (coordinated but comprehensive)
-
-#### **Observability:**
-- **Individual Agents**: Limited (per-agent only)
-- **Consolidated Agent**: Medium (single agent view)
-- **Orchestrator**: Highest (complete workflow visibility)
-
-#### **Flexibility:**
-- **Individual Agents**: Highest (complete control)
-- **Consolidated Agent**: Lowest (fixed workflow)
-- **Orchestrator**: High (configurable coordination)ure Overview
-
-This project demonstrates **multiple agent patterns** you can use with ADK:
-
-- **Individual Specialized Agents** - Triage, Solution, and Action agents that work independently
-- **Consolidated Agent** - Single agent handling the complete workflow  
-- **Multi-Agent Orchestrator** - Coordinates multiple agents working together
-- **Shared Tools Library** - Centralized, reusable tools eliminating code duplication
-
-All agents use **shared tools** from a centralized library, ensuring **zero code duplication** and **easy maintenance**.
-
-## 📁 Project Structure
-
-```
-project/
-├── shared_tools/                 # 🔧 Centralized tools library
-│   ├── crm_tools.py             # Customer & transcript lookup tools
-│   ├── action_tools.py          # Refund & communication tools  
-│   ├── policy_tools.py          # Policy & order status tools
-│   └── __init__.py              # Tool exports for easy importing
-├── triage_agent/                # 🔍 Individual triage specialist
-│   ├── agent.py                 # Triage logic + shared tools
-│   └── __init__.py
-├── solution_agent/              # 💡 Individual solution finder
-│   ├── agent.py                 # Solution logic + shared tools
-│   └── __init__.py
-├── action_agent/                # ⚡ Individual action executor
-│   ├── agent.py                 # Action logic + shared tools
-│   └── __init__.py
-├── customer_experience_rescue_swarm/ # 🎯 Consolidated agent
-│   ├── agent.py                 # Complete workflow + shared tools
-│   └── __init__.py
-└── customer_rescue_orchestrator/ # 🚀 Multi-agent orchestrator
-    ├── agent.py                 # Coordinates all agents
-    └── __init__.py
 ```
 
 ## 🤖 Available Agents
@@ -172,6 +106,16 @@ All agents use centralized tools from `shared_tools/`:
 - ✅ **Consistent behavior** - all agents use same implementations
 - ✅ **ADK compliance** - proper FunctionTool patterns
 
+## 🔍 Key Features
+
+- **🏗️ Clean Architecture** - Zero code duplication, proper separation of concerns
+- **🔧 Shared Tools** - Centralized, reusable tool library
+- **🎯 Multiple Patterns** - Individual, consolidated, and orchestrated agents
+- **✅ ADK Compliance** - Proper FunctionTool patterns and agent discovery
+- **🧪 Testable** - Individual tools and agents can be tested in isolation
+- **📊 Observable** - Detailed logging and workflow tracking
+- **🚀 Production Ready** - Follows best practices for maintainability
+
 ## 🚀 Getting Started
 
 ### **Prerequisites**
@@ -218,9 +162,64 @@ All agents use centralized tools from `shared_tools/`:
    - Get coordinated multi-agent resolution with full audit trail
    - Use for production deployments
 
-### **🧪 Testing Examples by Pattern**
+## 💡 Architecture Patterns & When to Use Them
 
-#### **Individual Agent Testing (Manual Workflow):**
+### **🎯 Architecture Decision Matrix**
+
+| Requirement | Individual Agents | Consolidated Agent | Orchestrator |
+|-------------|------------------|-------------------|--------------|
+| **Simple Testing** | ✅ Perfect | ⚠️ All-or-nothing | ❌ Complex |
+| **Production Deployment** | ❌ Complex coordination | ✅ Single deployment | ✅ Enterprise ready |
+| **Debugging** | ✅ Isolated testing | ⚠️ Harder to isolate | ✅ Detailed logging |
+| **Scalability** | ✅ Independent scaling | ⚠️ Monolithic | ✅ Distributed |
+| **Maintenance** | ⚠️ Multiple deployments | ✅ Single codebase | ⚠️ Complex orchestration |
+| **Audit Trail** | ❌ Manual tracking | ⚠️ Limited visibility | ✅ Complete workflow logs |
+| **Error Recovery** | ⚠️ Manual intervention | ⚠️ All-or-nothing | ✅ Step-by-step recovery |
+
+### **💡 When to Use Each Pattern**
+
+#### **🔍 Use Individual Agents When:**
+- Building and testing components in isolation
+- Need fine-grained control over each step
+- Debugging specific functionality
+- Learning ADK agent patterns
+- **Example**: "I want to test just the triage logic"
+
+#### **🎯 Use Consolidated Agent When:**
+- Simple deployment requirements
+- End-to-end automation needed
+- Limited infrastructure complexity
+- Proof of concept or demos
+- **Example**: "I want one agent that handles everything"
+
+#### **🚀 Use Orchestrator When:**
+- Enterprise production deployment
+- Complex workflow requirements
+- Detailed audit trails needed
+- Error recovery and monitoring
+- Multi-team development
+- **Example**: "I need enterprise-grade customer service automation"
+
+### **📈 Event Flow Comparison**
+
+#### **Speed to Resolution:**
+- **Individual Agents**: Slowest (manual coordination)
+- **Consolidated Agent**: Fastest (automated workflow)
+- **Orchestrator**: Medium (coordinated but comprehensive)
+
+#### **Observability:**
+- **Individual Agents**: Limited (per-agent only)
+- **Consolidated Agent**: Medium (single agent view)
+- **Orchestrator**: Highest (complete workflow visibility)
+
+#### **Flexibility:**
+- **Individual Agents**: Highest (complete control)
+- **Consolidated Agent**: Lowest (fixed workflow)
+- **Orchestrator**: High (configurable coordination)
+
+## 🧪 Testing Examples by Pattern
+
+### **Individual Agent Testing (Manual Workflow):**
 ```bash
 # Step 1: Test Triage
 Select: triage_agent
@@ -238,7 +237,7 @@ Input: "Execute full refund for order O-9987 and send apology communication"
 Expected: Refund confirmation and communication sent
 ```
 
-#### **Consolidated Agent Testing (Automated Workflow):**
+### **Consolidated Agent Testing (Automated Workflow):**
 ```bash
 # Single Request - Complete Resolution
 Select: customer_experience_rescue_swarm
@@ -253,7 +252,7 @@ Expected Flow:
 └── ✅ Returns: "Issue escalated and resolved: full refund processed. Customer notified via email."
 ```
 
-#### **Multi-Agent Orchestrator Testing (Coordinated Workflow):**
+### **Multi-Agent Orchestrator Testing (Coordinated Workflow):**
 ```bash
 # Orchestrated Multi-Step Resolution
 Select: customer_rescue_orchestrator
@@ -272,7 +271,74 @@ Expected Flow:
 └── ✅ Returns: Detailed workflow execution log with all coordination steps
 ```
 
-## 🔄 Event Flow & Architecture Patterns
+## 📁 Project Structure
+
+```
+project/
+├── shared_tools/                 # 🔧 Centralized tools library
+│   ├── crm_tools.py             # Customer & transcript lookup tools
+│   ├── action_tools.py          # Refund & communication tools  
+│   ├── policy_tools.py          # Policy & order status tools
+│   └── __init__.py              # Tool exports for easy importing
+├── triage_agent/                # 🔍 Individual triage specialist
+│   ├── agent.py                 # Triage logic + shared tools
+│   └── __init__.py
+├── solution_agent/              # 💡 Individual solution finder
+│   ├── agent.py                 # Solution logic + shared tools
+│   └── __init__.py
+├── action_agent/                # ⚡ Individual action executor
+│   ├── agent.py                 # Action logic + shared tools
+│   └── __init__.py
+├── customer_experience_rescue_swarm/ # 🎯 Consolidated agent
+│   ├── agent.py                 # Complete workflow + shared tools
+│   └── __init__.py
+└── customer_rescue_orchestrator/ # 🚀 Multi-agent orchestrator
+    ├── agent.py                 # Coordinates all agents
+    └── __init__.py
+```
+
+## 🔧 Development
+
+### **Adding New Tools**
+1. Add tool function to appropriate file in `shared_tools/`
+2. Wrap with `FunctionTool()` and export in `__init__.py`
+3. Import and use in any agent
+
+### **Adding New Agents**
+1. Create new directory with `agent.py` and `__init__.py`
+2. Import shared tools from `shared_tools`
+3. Add agent-specific logic as needed
+4. Agent will be automatically discoverable in ADK Web
+
+### **Architecture Evolution**
+- Start with individual agents for clear separation
+- Use consolidated agent for simpler deployment
+- Add orchestrator for complex multi-agent workflows
+- Leverage shared tools for consistency
+
+## 💡 Best Practices Demonstrated
+
+1. **Tool Organization** - Shared tools vs agent-specific logic
+2. **Code Reuse** - Eliminate duplication through centralized tools
+3. **ADK Patterns** - Proper FunctionTool usage and agent structure
+4. **Architecture Flexibility** - Multiple patterns for different use cases
+5. **Maintainability** - Single source of truth for tool implementations
+
+## 📝 Notes
+
+- **Mock Data**: Project includes mock implementations for CRM, policies, etc.
+- **ADK Version**: Built for Google ADK latest version
+- **Production Deployment**: Ready for Google Cloud Agent Engine deployment
+- **Extensibility**: Architecture supports easy addition of new agents and tools
+
+---
+
+## 📚 Detailed Implementation Guide
+
+*For detailed event flows, architecture diagrams, and step-by-step implementation examples, see the sections below.*
+
+<details>
+<summary><strong>🔄 Detailed Event Flow & Architecture Patterns</strong></summary>
 
 ### **Request Entry Points**
 
@@ -326,7 +392,7 @@ The system supports **multiple entry points** depending on your architectural ch
 ✅ Coordinated Multi-Step Resolution
 ```
 
-### **📊 Detailed Event Flow**
+### **📊 Detailed Event Flow Examples**
 
 #### **🔍 Individual Agent Flow (Manual Coordination)**
 
@@ -339,27 +405,6 @@ The system supports **multiple entry points** depending on your architectural ch
    └── calls make_triage_decision(ltv, status, sentiment)
 3. 📋 Returns: Escalation decision with priority and actions
 4. 👤 User manually proceeds to solution_agent with results
-```
-
-**When User Selects `solution_agent`:**
-```
-1. 👤 User: "Find solution for Gold Tier customer with damaged item"
-2. 💡 solution_agent:
-   ├── calls POLICY_LOOKUP_TOOL(query="damaged item Gold Tier")
-   ├── calls ORDER_STATUS_TOOL(order_id) [if needed]
-   └── calls rank_solutions(status, issue_type, policy, order_value)
-3. 📋 Returns: Ranked solution options with recommendations
-4. 👤 User manually proceeds to action_agent with chosen solution
-```
-
-**When User Selects `action_agent`:**
-```
-1. 👤 User: "Execute full refund for order O-9987"
-2. ⚡ action_agent:
-   ├── calls REFUND_TOOL(order_id="O-9987", amount=75.50)
-   ├── calls SEND_COMMUNICATION_TOOL(recipient, channel, message)
-   └── calls coordinate_action_execution(action_type, order_id, amount)
-3. ✅ Returns: Action confirmation and communication sent
 ```
 
 #### **🎯 Consolidated Agent Flow (Single Entry Point)**
@@ -384,9 +429,7 @@ The system supports **multiple entry points** depending on your architectural ch
    
    📍 ACTION PHASE:
    ├── calls REFUND_TOOL(order_id="O-9987", amount=75.50)
-   │   └── Returns: {"status": "success"}
    ├── calls SEND_COMMUNICATION_TOOL(customer, "email", apology_message)
-   │   └── Returns: {"status": "success"}
    └── calls process_customer_issue() for workflow coordination
 
 3. ✅ Returns: "Issue escalated and resolved: full refund processed. Customer notified via email."
@@ -420,78 +463,8 @@ The system supports **multiple entry points** depending on your architectural ch
 3. ✅ Returns: Detailed multi-step workflow log with all coordination steps
 ```
 
-### **🎯 Architecture Patterns Demonstrated**
+</details>
 
-#### **1. Shared Tools Pattern**
-```
-📦 shared_tools/
-├── 🔧 CRM_LOOKUP_TOOL ────────┬─── Used by ALL agents
-├── 🔧 TRANSCRIPT_RETRIEVAL_TOOL ─┤    (Zero duplication)
-├── 🔧 POLICY_LOOKUP_TOOL ────────┤
-├── 🔧 REFUND_TOOL ───────────────┤
-└── 🔧 SEND_COMMUNICATION_TOOL ───┘
-```
-
-#### **2. Individual Agent Pattern**
-- **Entry Point**: User selects specific agent directly
-- **Coordination**: Manual - user decides next steps
-- **Use Case**: Fine-grained control, testing individual components
-- **Data Flow**: User → Single Agent → User → Next Agent
-
-#### **3. Consolidated Agent Pattern**  
-- **Entry Point**: `customer_experience_rescue_swarm`
-- **Coordination**: Automatic - agent handles complete workflow
-- **Use Case**: Simple deployment, end-to-end automation
-- **Data Flow**: User → Consolidated Agent → Complete Resolution
-
-#### **4. Multi-Agent Orchestration Pattern**
-- **Entry Point**: `customer_rescue_orchestrator`
-- **Coordination**: Orchestrated - detailed workflow management
-- **Use Case**: Complex workflows, audit trails, enterprise deployments
-- **Data Flow**: User → Orchestrator → Coordinated Multi-Agent Resolution
-
-## 🔍 Key Features
-
-- **🏗️ Clean Architecture** - Zero code duplication, proper separation of concerns
-- **🔧 Shared Tools** - Centralized, reusable tool library
-- **🎯 Multiple Patterns** - Individual, consolidated, and orchestrated agents
-- **✅ ADK Compliance** - Proper FunctionTool patterns and agent discovery
-- **🧪 Testable** - Individual tools and agents can be tested in isolation
-- **📊 Observable** - Detailed logging and workflow tracking
-- **🚀 Production Ready** - Follows best practices for maintainability
-
-## 💡 Best Practices Demonstrated
-
-1. **Tool Organization** - Shared tools vs agent-specific logic
-2. **Code Reuse** - Eliminate duplication through centralized tools
-3. **ADK Patterns** - Proper FunctionTool usage and agent structure
-4. **Architecture Flexibility** - Multiple patterns for different use cases
-5. **Maintainability** - Single source of truth for tool implementations
-
-## 🔧 Development
-
-### **Adding New Tools**
-1. Add tool function to appropriate file in `shared_tools/`
-2. Wrap with `FunctionTool()` and export in `__init__.py`
-3. Import and use in any agent
-
-### **Adding New Agents**
-1. Create new directory with `agent.py` and `__init__.py`
-2. Import shared tools from `shared_tools`
-3. Add agent-specific logic as needed
-4. Agent will be automatically discoverable in ADK Web
-
-### **Architecture Evolution**
-- Start with individual agents for clear separation
-- Use consolidated agent for simpler deployment
-- Add orchestrator for complex multi-agent workflows
-- Leverage shared tools for consistency
-
-## 📝 Notes
-
-- **Mock Data**: Project includes mock implementations for CRM, policies, etc.
-- **ADK Version**: Built for Google ADK latest version
-- **Production Deployment**: Ready for Google Cloud Agent Engine deployment
-- **Extensibility**: Architecture supports easy addition of new agents and tools
+---
 
 This implementation demonstrates **enterprise-grade agent architecture** with proper separation of concerns, zero code duplication, and multiple architectural patterns for different use cases.
