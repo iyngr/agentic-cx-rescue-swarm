@@ -3,3 +3,4 @@ google-cloud-pubsub
 google-cloud-secret-manager
 google-cloud-bigquery
 google-api-python-client
+google-adk
