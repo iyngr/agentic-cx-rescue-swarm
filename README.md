@@ -2,7 +2,89 @@
 
 A multi-agent system built with **Google Agent Development Kit (ADK)** that proactively handles customer issues based on sentiment analysis of call transcripts. Features **clean architecture** with **zero code duplication** and follows **ADK best practices**.
 
-## 🏗️ Clean Architecture Overview
+## 🏗️ Clean ### **🎯 Architecture Decision Matrix**
+
+| Requirement | Individual Agents | Consolidated Agent | Orchestrator |
+|-------------|------------------|-------------------|--------------|
+| **Simple Testing** | ✅ Perfect | ⚠️ All-or-nothing | ❌ Complex |
+| **Production Deployment** | ❌ Complex coordination | ✅ Single deployment | ✅ Enterprise ready |
+| **Debugging** | ✅ Isolated testing | ⚠️ Harder to isolate | ✅ Detailed logging |
+| **Scalability** | ✅ Independent scaling | ⚠️ Monolithic | ✅ Distributed |
+| **Maintenance** | ⚠️ Multiple deployments | ✅ Single codebase | ⚠️ Complex orchestration |
+| **Audit Trail** | ❌ Manual tracking | ⚠️ Limited visibility | ✅ Complete workflow logs |
+| **Error Recovery** | ⚠️ Manual intervention | ⚠️ All-or-nothing | ✅ Step-by-step recovery |
+
+### **💡 When to Use Each Pattern**
+
+#### **🔍 Use Individual Agents When:**
+- Building and testing components in isolation
+- Need fine-grained control over each step
+- Debugging specific functionality
+- Learning ADK agent patterns
+- **Example**: "I want to test just the triage logic"
+
+#### **🎯 Use Consolidated Agent When:**
+- Simple deployment requirements
+- End-to-end automation needed
+- Limited infrastructure complexity
+- Proof of concept or demos
+- **Example**: "I want one agent that handles everything"
+
+#### **🚀 Use Orchestrator When:**
+- Enterprise production deployment
+- Complex workflow requirements
+- Detailed audit trails needed
+- Error recovery and monitoring
+- Multi-team development
+- **Example**: "I need enterprise-grade customer service automation"
+
+### **🔄 Complete System Architecture**
+
+```
+                    👤 USER REQUEST
+                         │
+        ┌────────────────┼────────────────┐
+        │                │                │
+        ▼                ▼                ▼
+   🔍 Individual     🎯 Consolidated   🚀 Orchestrator
+     Agents           Agent             Pattern
+        │                │                │
+        ├─ triage_agent  │                ├─ Coordinates:
+        ├─ solution_agent├─ Workflow:     │  ├─ Triage Phase
+        └─ action_agent  │  ├─ Triage     │  ├─ Solution Phase
+                         │  ├─ Solution   │  └─ Action Phase
+                         │  └─ Action     │
+                         │                │
+        ┌────────────────┼────────────────┘
+        │                │
+        ▼                ▼
+    📦 SHARED TOOLS LIBRARY
+    ├── 🔧 CRM_LOOKUP_TOOL
+    ├── 🔧 TRANSCRIPT_RETRIEVAL_TOOL  
+    ├── 🔧 POLICY_LOOKUP_TOOL
+    ├── 🔧 REFUND_TOOL
+    └── 🔧 SEND_COMMUNICATION_TOOL
+        │
+        ▼
+    ✅ CUSTOMER RESOLUTION
+```
+
+### **📈 Event Flow Comparison**
+
+#### **Speed to Resolution:**
+- **Individual Agents**: Slowest (manual coordination)
+- **Consolidated Agent**: Fastest (automated workflow)
+- **Orchestrator**: Medium (coordinated but comprehensive)
+
+#### **Observability:**
+- **Individual Agents**: Limited (per-agent only)
+- **Consolidated Agent**: Medium (single agent view)
+- **Orchestrator**: Highest (complete workflow visibility)
+
+#### **Flexibility:**
+- **Individual Agents**: Highest (complete control)
+- **Consolidated Agent**: Lowest (fixed workflow)
+- **Orchestrator**: High (configurable coordination)ure Overview
 
 This project demonstrates **multiple agent patterns** you can use with ADK:
 
@@ -119,50 +201,254 @@ All agents use centralized tools from `shared_tools/`:
 
 2. **Open browser** to `http://localhost:8000`
 
-3. **Select any agent** from the dropdown:
-   - `triage_agent` - Test triage functionality
-   - `solution_agent` - Test solution finding
-   - `action_agent` - Test action execution
-   - `customer_experience_rescue_swarm` - Test complete workflow
-   - `customer_rescue_orchestrator` - Test multi-agent coordination
+3. **Choose your architecture pattern:**
 
-### **Testing Examples**
+   **🔍 For Component Testing:**
+   - Select `triage_agent`, `solution_agent`, or `action_agent`
+   - Test individual components manually
+   - Use for development and debugging
 
-#### **Individual Agent Testing:**
+   **🎯 For Complete Automation:**
+   - Select `customer_experience_rescue_swarm`
+   - Get end-to-end resolution in single request
+   - Use for demos and simple deployments
+
+   **🚀 For Enterprise Workflows:**
+   - Select `customer_rescue_orchestrator`
+   - Get coordinated multi-agent resolution with full audit trail
+   - Use for production deployments
+
+### **🧪 Testing Examples by Pattern**
+
+#### **Individual Agent Testing (Manual Workflow):**
+```bash
+# Step 1: Test Triage
+Select: triage_agent
+Input: "Analyze customer C67890 with transcript T12345 - extremely upset about damaged product"
+Expected: Escalation decision with priority and recommended actions
+
+# Step 2: Test Solution (using triage results)
+Select: solution_agent  
+Input: "Find solution for Gold Tier customer with damaged expensive item"
+Expected: Ranked solution options with full refund recommendation
+
+# Step 3: Test Action (using solution results)
+Select: action_agent
+Input: "Execute full refund for order O-9987 and send apology communication"
+Expected: Refund confirmation and communication sent
 ```
-Triage Agent: "Analyze customer C67890 with transcript T12345"
-Solution Agent: "Find solution for Gold Tier customer with damaged item"  
-Action Agent: "Execute full refund for order O-9987"
+
+#### **Consolidated Agent Testing (Automated Workflow):**
+```bash
+# Single Request - Complete Resolution
+Select: customer_experience_rescue_swarm
+Input: "Customer C67890 with transcript T12345 is complaining about a damaged item they received. They said 'I will never buy from you again, this is the worst experience ever.'"
+
+Expected Flow:
+├── 🔍 Calls CRM_LOOKUP_TOOL → Gets Gold Tier, LTV $1500
+├── 🔍 Calls TRANSCRIPT_RETRIEVAL_TOOL → Confirms severe dissatisfaction  
+├── 💡 Calls POLICY_LOOKUP_TOOL → Gets Gold Tier damage policy
+├── ⚡ Calls REFUND_TOOL → Processes $75.50 refund
+├── ⚡ Calls SEND_COMMUNICATION_TOOL → Sends personalized apology
+└── ✅ Returns: "Issue escalated and resolved: full refund processed. Customer notified via email."
 ```
 
-#### **Complete Workflow Testing:**
+#### **Multi-Agent Orchestrator Testing (Coordinated Workflow):**
+```bash
+# Orchestrated Multi-Step Resolution
+Select: customer_rescue_orchestrator
+Input: "Orchestrate complete resolution for customer C67890 with transcript T12345. Customer is extremely angry about receiving a damaged expensive item and threatening to leave."
+
+Expected Flow:
+├── 🚀 STEP 1: TRIAGE COORDINATION
+│   ├── Calls CRM + Transcript tools
+│   └── Logs: "✅ TRIAGE DECISION: ESCALATE (Gold Tier + Severe Dissatisfaction)"
+├── 🚀 STEP 2: SOLUTION COORDINATION  
+│   ├── Calls Policy tools
+│   └── Logs: "💡 SOLUTION PHASE: Recommending full refund with premium handling"
+├── 🚀 STEP 3: ACTION COORDINATION
+│   ├── Calls Refund + Communication tools
+│   └── Logs: "⚡ ACTION PHASE: Refund processed, personalized communication sent"
+└── ✅ Returns: Detailed workflow execution log with all coordination steps
 ```
-Consolidated Agent: "Customer C67890 with transcript T12345 is complaining about a damaged item"
 
-Multi-Agent Orchestrator: "Orchestrate complete resolution for customer C67890 with damaged item complaint"
+## 🔄 Event Flow & Architecture Patterns
+
+### **Request Entry Points**
+
+The system supports **multiple entry points** depending on your architectural choice:
+
+1. **Direct Agent Access** - User selects specific agent in ADK Web
+2. **Consolidated Workflow** - Single agent handles complete process
+3. **Orchestrated Multi-Agent** - Orchestrator coordinates multiple agents
+
+### **🏗️ Architecture Diagrams**
+
+#### **Pattern 1: Individual Specialized Agents**
+```
+👤 User Request
+    ↓
+🔍 triage_agent
+    ↓ (manual handoff)
+💡 solution_agent  
+    ↓ (manual handoff)
+⚡ action_agent
+    ↓
+✅ Resolution
 ```
 
-## 🎯 Architecture Patterns Demonstrated
+#### **Pattern 2: Consolidated Agent Workflow**
+```
+👤 User Request
+    ↓
+🎯 customer_experience_rescue_swarm
+    ├── calls CRM_LOOKUP_TOOL
+    ├── calls TRANSCRIPT_RETRIEVAL_TOOL
+    ├── calls POLICY_LOOKUP_TOOL
+    ├── calls REFUND_TOOL
+    ├── calls SEND_COMMUNICATION_TOOL
+    └── uses process_customer_issue()
+    ↓
+✅ Complete Resolution
+```
 
-### **1. Shared Tools Pattern**
-- Centralized tool library
-- FunctionTool wrapper usage
-- Import and reuse across agents
+#### **Pattern 3: Multi-Agent Orchestration**
+```
+👤 User Request
+    ↓
+🚀 customer_rescue_orchestrator
+    ├── Step 1: Calls CRM + Transcript tools
+    ├── Step 2: Calls Policy tools for solution
+    ├── Step 3: Calls Action tools for execution
+    ├── Step 4: Calls Communication tools
+    └── uses orchestrate_customer_issue()
+    ↓
+✅ Coordinated Multi-Step Resolution
+```
 
-### **2. Individual Agent Pattern**
-- Specialized, single-responsibility agents
-- Agent-specific business logic
-- Tool composition for specific domains
+### **📊 Detailed Event Flow**
 
-### **3. Consolidated Agent Pattern**  
-- Single agent handling complete workflow
-- Internal workflow orchestration
-- Simplified deployment and management
+#### **🔍 Individual Agent Flow (Manual Coordination)**
 
-### **4. Multi-Agent Orchestration Pattern**
-- Agent coordination and communication
-- Workflow state management
-- Inter-agent data passing
+**When User Selects `triage_agent`:**
+```
+1. 👤 User: "Analyze customer C67890 with transcript T12345"
+2. 🔍 triage_agent:
+   ├── calls CRM_LOOKUP_TOOL(customer_id="C67890")
+   ├── calls TRANSCRIPT_RETRIEVAL_TOOL(transcript_id="T12345")
+   └── calls make_triage_decision(ltv, status, sentiment)
+3. 📋 Returns: Escalation decision with priority and actions
+4. 👤 User manually proceeds to solution_agent with results
+```
+
+**When User Selects `solution_agent`:**
+```
+1. 👤 User: "Find solution for Gold Tier customer with damaged item"
+2. 💡 solution_agent:
+   ├── calls POLICY_LOOKUP_TOOL(query="damaged item Gold Tier")
+   ├── calls ORDER_STATUS_TOOL(order_id) [if needed]
+   └── calls rank_solutions(status, issue_type, policy, order_value)
+3. 📋 Returns: Ranked solution options with recommendations
+4. 👤 User manually proceeds to action_agent with chosen solution
+```
+
+**When User Selects `action_agent`:**
+```
+1. 👤 User: "Execute full refund for order O-9987"
+2. ⚡ action_agent:
+   ├── calls REFUND_TOOL(order_id="O-9987", amount=75.50)
+   ├── calls SEND_COMMUNICATION_TOOL(recipient, channel, message)
+   └── calls coordinate_action_execution(action_type, order_id, amount)
+3. ✅ Returns: Action confirmation and communication sent
+```
+
+#### **🎯 Consolidated Agent Flow (Single Entry Point)**
+
+**When User Selects `customer_experience_rescue_swarm`:**
+```
+1. 👤 User: "Customer C67890 with transcript T12345 is complaining about damaged item"
+
+2. 🎯 customer_experience_rescue_swarm automatically:
+   
+   📍 TRIAGE PHASE:
+   ├── calls CRM_LOOKUP_TOOL(customer_id="C67890")
+   │   └── Returns: {"ltv": 1500, "status": "Gold Tier", "orders": 12}
+   ├── calls TRANSCRIPT_RETRIEVAL_TOOL(transcript_id="T12345") 
+   │   └── Returns: "very unhappy... damaged... never again..."
+   └── Internal logic: Severe dissatisfaction + High value = ESCALATE
+   
+   📍 SOLUTION PHASE:
+   ├── calls POLICY_LOOKUP_TOOL(query="damaged item Gold Tier customer")
+   │   └── Returns: "Full refund or express replacement for Gold customers"
+   └── Internal logic: Select full refund based on policy
+   
+   📍 ACTION PHASE:
+   ├── calls REFUND_TOOL(order_id="O-9987", amount=75.50)
+   │   └── Returns: {"status": "success"}
+   ├── calls SEND_COMMUNICATION_TOOL(customer, "email", apology_message)
+   │   └── Returns: {"status": "success"}
+   └── calls process_customer_issue() for workflow coordination
+
+3. ✅ Returns: "Issue escalated and resolved: full refund processed. Customer notified via email."
+```
+
+#### **🚀 Multi-Agent Orchestration Flow (Coordinated Entry Point)**
+
+**When User Selects `customer_rescue_orchestrator`:**
+```
+1. 👤 User: "Orchestrate complete resolution for customer C67890 with damaged item"
+
+2. 🚀 customer_rescue_orchestrator coordinates:
+
+   📍 STEP 1: TRIAGE COORDINATION
+   ├── calls CRM_LOOKUP_TOOL(customer_id="C67890")
+   ├── calls TRANSCRIPT_RETRIEVAL_TOOL(transcript_id="T12345")
+   ├── Logs: "🔍 TRIAGE PHASE: Customer Gold Tier (LTV: $1500)"
+   └── Decision: "✅ TRIAGE DECISION: ESCALATE"
+   
+   📍 STEP 2: SOLUTION COORDINATION  
+   ├── calls POLICY_LOOKUP_TOOL(query="damaged item Gold Tier customer")
+   ├── Logs: "💡 SOLUTION PHASE: Policy retrieved for high-value customer"
+   └── Decision: "Best solution: full_refund with premium handling"
+   
+   📍 STEP 3: ACTION COORDINATION
+   ├── calls REFUND_TOOL(order_id="O-9987", amount=75.50)
+   ├── calls SEND_COMMUNICATION_TOOL(customer, "email", personalized_message)
+   ├── Logs: "⚡ ACTION PHASE: Refund processed, communication sent"
+   └── calls orchestrate_customer_issue() for detailed workflow logging
+
+3. ✅ Returns: Detailed multi-step workflow log with all coordination steps
+```
+
+### **🎯 Architecture Patterns Demonstrated**
+
+#### **1. Shared Tools Pattern**
+```
+📦 shared_tools/
+├── 🔧 CRM_LOOKUP_TOOL ────────┬─── Used by ALL agents
+├── 🔧 TRANSCRIPT_RETRIEVAL_TOOL ─┤    (Zero duplication)
+├── 🔧 POLICY_LOOKUP_TOOL ────────┤
+├── 🔧 REFUND_TOOL ───────────────┤
+└── 🔧 SEND_COMMUNICATION_TOOL ───┘
+```
+
+#### **2. Individual Agent Pattern**
+- **Entry Point**: User selects specific agent directly
+- **Coordination**: Manual - user decides next steps
+- **Use Case**: Fine-grained control, testing individual components
+- **Data Flow**: User → Single Agent → User → Next Agent
+
+#### **3. Consolidated Agent Pattern**  
+- **Entry Point**: `customer_experience_rescue_swarm`
+- **Coordination**: Automatic - agent handles complete workflow
+- **Use Case**: Simple deployment, end-to-end automation
+- **Data Flow**: User → Consolidated Agent → Complete Resolution
+
+#### **4. Multi-Agent Orchestration Pattern**
+- **Entry Point**: `customer_rescue_orchestrator`
+- **Coordination**: Orchestrated - detailed workflow management
+- **Use Case**: Complex workflows, audit trails, enterprise deployments
+- **Data Flow**: User → Orchestrator → Coordinated Multi-Agent Resolution
 
 ## 🔍 Key Features
 
