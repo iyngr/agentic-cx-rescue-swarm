@@ -8,62 +8,74 @@ import json
 # Import shared tools (no duplication!)
 from shared_tools import REFUND_TOOL, SEND_COMMUNICATION_TOOL
 
-def execute_and_communicate(solution_json: str) -> str:
+def coordinate_action_execution(action_type: str, order_id: str, amount: float = 0.0, customer_email: str = "customer@example.com") -> str:
     """
-    Agent-specific execution and communication logic.
+    Coordinate the execution of a specific action based on the action type.
     
-    This function contains the business logic specific to executing actions.
-    It uses shared tools but implements action-specific orchestration.
+    This function contains the business logic specific to action execution coordination.
+    It expects the agent to have already called the appropriate action tools.
 
     Args:
-        solution_json: A JSON string containing the solution to execute.
+        action_type: The type of action to coordinate (e.g., "full_refund", "reship_express").
+        order_id: The order ID for the action.
+        amount: The amount for refunds (if applicable).
+        customer_email: The customer's email address for communication.
 
     Returns:
-        A summary of the actions taken.
+        A summary of the action coordination and next steps.
     """
-    solution = json.loads(solution_json)
+    execution_summary = []
+    recommended_communication = ""
     
-    # Use shared tools (imported, not duplicated)
-    from shared_tools.action_tools import refund_tool, send_communication_tool
-    
-    # Action-specific execution logic
-    action_type = solution.get("action")
-    params = solution.get("params", {})
-    explanation = solution.get("explanation", "")
-    
-    execution_log = []
-    
-    # Execute the specific action
+    # Coordinate based on action type
     if action_type == "full_refund":
-        refund_result = refund_tool(params["order_id"], params["amount"])
-        if refund_result["status"] == "success":
-            execution_log.append(f"✅ Refund processed: ${params['amount']} for order {params['order_id']}")
-        else:
-            execution_log.append(f"❌ Refund failed for order {params['order_id']}")
-    
-    elif action_type == "reship_express":
-        execution_log.append(f"✅ Express re-shipment initiated for order {params['order_id']}")
-    
-    elif action_type == "generate_coupon":
-        execution_log.append(f"✅ Generated {params['value']}{params['unit']} coupon")
-    
-    # Send customer communication
-    email_body = f"""Dear Valued Customer,
+        execution_summary.append(f"🔄 COORDINATING: Full refund of ${amount} for order {order_id}")
+        execution_summary.append("📋 STEPS: Process refund → Send confirmation → Update customer record")
+        recommended_communication = f"""Dear Valued Customer,
 
-Thank you for contacting us about your recent concern. We have taken the following action to resolve your issue:
+We have processed a full refund of ${amount} for your order {order_id}. The refund will appear in your account within 3-5 business days.
 
-{explanation}
-
-We sincerely apologize for any inconvenience and appreciate your patience.
+We sincerely apologize for the inconvenience and appreciate your understanding.
 
 Best regards,
 Customer Experience Team"""
+        
+    elif action_type == "reship_express":
+        execution_summary.append(f"🔄 COORDINATING: Express re-shipment for order {order_id}")
+        execution_summary.append("📋 STEPS: Prepare replacement → Expedited shipping → Tracking notification")
+        recommended_communication = f"""Dear Valued Customer,
+
+We are expediting a replacement for your order {order_id}. You will receive tracking information within the next hour.
+
+Expected delivery: 1-2 business days.
+
+Best regards,
+Customer Experience Team"""
+        
+    elif action_type == "generate_coupon":
+        execution_summary.append(f"🔄 COORDINATING: Generating goodwill coupon for customer")
+        execution_summary.append("📋 STEPS: Create coupon code → Set expiration → Send to customer")
+        recommended_communication = f"""Dear Valued Customer,
+
+As a gesture of goodwill, we're providing you with a special discount for your next purchase.
+
+Thank you for your patience and continued loyalty.
+
+Best regards,
+Customer Experience Team"""
+        
+    else:
+        execution_summary.append(f"🔄 COORDINATING: Standard follow-up for {action_type}")
+        recommended_communication = "Standard follow-up communication recommended."
     
-    comm_result = send_communication_tool("customer@example.com", "email", email_body)
-    if comm_result["status"] == "success":
-        execution_log.append("✅ Customer notification sent via email")
+    execution_summary.append(f"📧 COMMUNICATION READY: Email drafted for {customer_email}")
+    execution_summary.append("✅ COORDINATION COMPLETE: Ready for tool execution")
     
-    return "\n".join(execution_log)
+    return json.dumps({
+        "coordination_summary": execution_summary,
+        "recommended_communication": recommended_communication,
+        "next_steps": ["Execute action tools", "Send customer communication", "Update records"]
+    }, indent=2)
 
 # Create the action agent using shared tools + agent-specific logic
 root_agent = Agent(
@@ -73,14 +85,19 @@ root_agent = Agent(
     instruction="""You are an Action Agent for customer issue resolution.
 
 Your job is to:
-1. Execute specific resolution actions (refunds, re-shipments, coupons)
-2. Send appropriate communications to customers
-3. Provide execution summaries and status updates
+1. Use REFUND_TOOL to process refunds when needed
+2. Use SEND_COMMUNICATION_TOOL to notify customers of actions taken
+3. Use coordinate_action_execution to plan and coordinate complex action sequences
 
-Use the shared tools to perform actions and communications, then apply action-specific orchestration logic.""",
+IMPORTANT: Use the action tools FIRST to execute the specific actions, then use coordinate_action_execution to provide coordination and next steps.
+
+Example workflow:
+1. Call REFUND_TOOL if refund is needed
+2. Call SEND_COMMUNICATION_TOOL to notify customer
+3. Call coordinate_action_execution to summarize and plan follow-up""",
     tools=[
-        REFUND_TOOL,                    # Shared tool
-        SEND_COMMUNICATION_TOOL,        # Shared tool
-        FunctionTool(execute_and_communicate) # Agent-specific logic
+        REFUND_TOOL,                    # Shared tool - call when refund needed
+        SEND_COMMUNICATION_TOOL,        # Shared tool - call to notify customer
+        FunctionTool(coordinate_action_execution) # Agent-specific logic - call for coordination
     ]
 )
